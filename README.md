@@ -1,4 +1,5 @@
-# $\color{Cerulean}{Python\}$ $\color{Goldenrod}{Examples\}$
+# ![Python](https://img.shields.io/badge/Python-Examples-yellow?style=for-the-badge&labelColor=blue&logo=python&logoColor=white)
+
 <div align="center">
   <a href="https://sonarcloud.io/summary/new_code?id=meleksabit_My-Python-Examples">
     <img src="https://sonarcloud.io/images/project_badges/sonarcloud-highlight.svg" alt="SonarQube Cloud">
