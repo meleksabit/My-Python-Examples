@@ -26,6 +26,6 @@ jobs:
             java-package: 'jdk'
 
       - name: Sonar Scan
-        uses: sonarsource/sonarqube-scan-action@v8 # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/sonarcloud-scan
+        uses: sonarsource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
