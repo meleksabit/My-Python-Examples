@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
   pull_request:
     branches:
       - main
@@ -12,19 +13,66 @@ jobs:
   security-checks:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      security-events: write
+
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - name: Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@28f2168f4d98ee0445e3c6321f6e6616c83dd5ec
+        with:
+          python-version: '3.13'
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install pip==26.1.1
-        pip install --require-hashes --only-binary :all: -r requirements.txt
+      - name: Install pip-tools
+        run: |
+          python -m pip install --upgrade pip==25.1.1
+          pip install pip-tools==7.4.1
 
-    - name: Run DevSecOps Pipeline
-      run: python devsecops_pipeline.py
+      - name: Install Dependencies
+        run: |
+          pip install --require-hashes --only-binary :all: -r requirements.txt
+
+      # -------------------------
+      # Bandit (Python SAST)
+      # -------------------------
+      - name: Run Bandit
+        run: |
+          bandit -r .
+
+      # -------------------------
+      # pip-audit (Dependency Audit)
+      # -------------------------
+      - name: Run pip-audit
+        run: |
+          pip install pip-audit
+          pip-audit
+
+      # -------------------------
+      # Ruff (Modern Linting)
+      # -------------------------
+      - name: Run Ruff
+        run: |
+          pip install ruff
+          ruff check .
+
+      # -------------------------
+      # Trivy IaC Scan
+      # -------------------------
+      - name: Run Trivy IaC Scan
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          scan-type: 'config'
+          scan-ref: '.'
+
+      # -------------------------
+      # TruffleHog Secret Scan
+      # -------------------------
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog@37b77001d0174ebec2fcca2bd83ff83a6d45a3ab
+        with:
+          path: ./
+          base: main
+          head: HEAD
