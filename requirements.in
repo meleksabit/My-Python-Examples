@@ -1,4 +1,6 @@
 bandit
+ruff
+pip-audit
 safety
-trufflehog
+trufflehog3
 pylint
